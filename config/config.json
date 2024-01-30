@@ -1,0 +1,17 @@
+{
+    "env": "local",
+
+    "db": {
+        "host" : "localhost",
+        "port" : 5243,
+        "name" : "postgres",
+        "username" : "postgres",
+        "password" : "postgres"
+    },
+
+    "httpserver" : {
+        "address": "localhost:8082",
+        "timeout": "4s",
+        "idle_timeout": "60s"
+    }
+}

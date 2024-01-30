@@ -9,17 +9,25 @@ import (
 )
 
 type Config struct {
-	Env string `yaml:"env" env:"ENV" env-default:"local" env-required:"true"` // struct tags (yaml link),
+	Env string `json:"env"` // struct tags (yaml link),
 	//																			(param name if it will be read from env variables)
 	// 																			(default value - could be unsafe if config is lost)
-	StoragePath string `yaml:"storage_path" env-required:"true"`
-	HTTPServer  `yaml:"http_server"`
+	DB         DB     `json:"db"`
+	HTTPServer string `json:"httpserver"`
 }
 
 type HTTPServer struct {
 	Address     string        `yaml:"address" env-default:"localhost:8080"`
 	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
+}
+
+type DB struct {
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 // Must before func name => can throw panics instead of errors (design choice, not language feature)

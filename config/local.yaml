@@ -1,5 +1,10 @@
 env: "local" # local, dev, prod - type of machine where server is running. based on this can change behaviour somewhere?
-storage_path: "./storage/storage.db" # path to storage (with sqlite it's quite simple)
+db: 
+  host: "localhost" # path to storage (with sqlite it's quite simple)
+  port: 5432
+  name: "urls"
+  username: postgres
+  password: postgres
 http_server:
   address: "localhost:8082"
   timeout: 4s # timeout to read/write response/request
