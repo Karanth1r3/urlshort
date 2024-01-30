@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Karanth1r3/url-short-learn/internal/config"
+	"github.com/Karanth1r3/url-short-learn/internal/storage/pg"
 	"github.com/Karanth1r3/url-short-learn/internal/util"
 	"github.com/Karanth1r3/url-short-learn/internal/util/logger/slg"
 )
@@ -31,16 +32,23 @@ func main() {
 
 	//Initializing storage
 
-	storage, err := util.ConnectDB(cfg.DB)
-	//sqlite.New(cfg.StoragePath)
+	db, err := util.ConnectDB(cfg.DB)
 	if err != nil {
-		//fmt.Println(err)
 		log.Error("failed to init storage", slg.Err(err))
 		os.Exit(1) // Terminating program with exitcode 1
 	}
-	defer storage.Close()
-	//defer storage.DB.Close()
-	_ = storage
+
+	defer db.Close()
+
+	storage := pg.New(db)
+
+	err = storage.SaveURL("asdf", "asdf")
+	if err != nil {
+		log.Error("failed to save url", slg.Err(err))
+		os.Exit(1)
+	}
+
+	log.Info("saved url")
 	//fmt.Println(storage)
 
 	// TODO: init router: chi, chi render
