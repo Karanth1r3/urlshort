@@ -41,16 +41,24 @@ func main() {
 	defer db.Close()
 
 	storage := pg.New(db)
+	/*
+		err = storage.SaveURL("asdf", "asdf")
+		if err != nil {
+			log.Error("failed to save url", slg.Err(err))
+			os.Exit(1)
+		}
+	*/
+	/*
+		log.Info("saved url")
 
-	err = storage.SaveURL("asdf", "asdf")
-	if err != nil {
-		log.Error("failed to save url", slg.Err(err))
-		os.Exit(1)
-	}
-
-	log.Info("saved url")
-	//fmt.Println(storage)
-
+		err = storage.DeleteURL("asd")
+		if err != nil {
+			log.Error("failed to get url", slg.Err(err))
+			os.Exit(1)
+		}
+		log.Info("deleted")
+		//fmt.Println(storage)
+	*/
 	// TODO: init router: chi, chi render
 
 	// TODO" run server:
