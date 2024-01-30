@@ -2,7 +2,7 @@ env: "local" # local, dev, prod - type of machine where server is running. based
 db: 
   host: "localhost" # path to storage (with sqlite it's quite simple)
   port: 5432
-  name: "urls"
+  name: "postgres"
   username: postgres
   password: postgres
 http_server:

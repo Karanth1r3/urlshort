@@ -1,15 +1,13 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log/slog"
 	"os"
 
 	"github.com/Karanth1r3/url-short-learn/internal/config"
+	"github.com/Karanth1r3/url-short-learn/internal/util"
 	"github.com/Karanth1r3/url-short-learn/internal/util/logger/slg"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 const (
@@ -21,7 +19,6 @@ const (
 func main() {
 	// Initializing config (parsing from file): cleanenv
 	os.Setenv("CONFIG_PATH", "./config/local.yaml")
-
 	cfg := config.MustLoad()
 
 	fmt.Println(cfg)
@@ -34,7 +31,7 @@ func main() {
 
 	//Initializing storage
 
-	storage, err := sql.Open("sqlite3", "./storage/storage.db")
+	storage, err := util.ConnectDB(cfg.DB)
 	//sqlite.New(cfg.StoragePath)
 	if err != nil {
 		//fmt.Println(err)

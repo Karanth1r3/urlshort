@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Karanth1r3/url-short-learn/internal/config"
+
+	_ "github.com/lib/pq"
 )
 
 func ConnectDB(cfg config.DB) (*sql.DB, error) {
