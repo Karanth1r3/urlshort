@@ -12,8 +12,8 @@ type Config struct {
 	Env string `json:"env"` // struct tags (yaml link),
 	//																			(param name if it will be read from env variables)
 	// 																			(default value - could be unsafe if config is lost)
-	DB         DB     `json:"db"`
-	HTTPServer string `json:"httpserver"`
+	DB         DB         `json:"db"`
+	HTTPServer HTTPServer `json:"httpserver"`
 }
 
 type HTTPServer struct {

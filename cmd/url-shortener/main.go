@@ -3,12 +3,17 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 
 	"github.com/Karanth1r3/url-short-learn/internal/config"
+	"github.com/Karanth1r3/url-short-learn/internal/httpapi/mw"
+	"github.com/Karanth1r3/url-short-learn/internal/httpapi/server/handlers/url/save"
 	"github.com/Karanth1r3/url-short-learn/internal/storage/pg"
 	"github.com/Karanth1r3/url-short-learn/internal/util"
 	"github.com/Karanth1r3/url-short-learn/internal/util/logger/slg"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 const (
@@ -41,6 +46,43 @@ func main() {
 	defer db.Close()
 
 	storage := pg.New(db)
+
+	//_ = storage
+
+	router := chi.NewRouter()
+
+	// middleware
+	// mw for getting req id for tracing
+	//router.Use(middleware.RequestID)
+	// mw for getting ips of requesters
+	//router.Use(middleware.RealIP)
+	// mw for request loggers (internal logger of chi)
+	router.Use(middleware.Logger)
+	router.Use(mw.New(log))
+	//mw for recovering from panic
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
+
+	router.Post("/url", save.New(log, storage))
+
+	log.Info("starting sever", slog.String("address: ", cfg.HTTPServer.Address))
+
+	// Configuring server before launch
+	srv := &http.Server{
+		Addr:         cfg.HTTPServer.Address,
+		Handler:      router,
+		ReadTimeout:  cfg.HTTPServer.Timeout,
+		WriteTimeout: cfg.HTTPServer.Timeout,
+		IdleTimeout:  cfg.HTTPServer.IdleTimeout,
+	}
+
+	// ListenAndServe is blocking. If execution passed it's position => server has stopped
+	if err := srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server")
+	}
+
+	log.Error("server stopped")
+
 	/*
 		err = storage.SaveURL("asdf", "asdf")
 		if err != nil {
