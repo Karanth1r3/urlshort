@@ -8,6 +8,8 @@ import (
 
 	"github.com/Karanth1r3/url-short-learn/internal/config"
 	"github.com/Karanth1r3/url-short-learn/internal/httpapi/mw"
+	"github.com/Karanth1r3/url-short-learn/internal/httpapi/server/handlers/url/deleter"
+	"github.com/Karanth1r3/url-short-learn/internal/httpapi/server/handlers/url/redirect"
 	"github.com/Karanth1r3/url-short-learn/internal/httpapi/server/handlers/url/save"
 	"github.com/Karanth1r3/url-short-learn/internal/storage/pg"
 	"github.com/Karanth1r3/url-short-learn/internal/util"
@@ -63,7 +65,17 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Post("/url", save.New(log, storage))
+	// urls with /url will be handleded by this subrouter func
+	router.Route("/url", func(r chi.Router) {
+		r.Use(middleware.BasicAuth("url-shortener", map[string]string{
+			cfg.HTTPServer.User: cfg.HTTPServer.Password,
+		}))
+		// this Handlers will be available only for authorized /url is not required as it is already present in group (above)
+		r.Post("/", save.New(log, storage))
+		r.Delete("/{alias}", deleter.New(log, storage))
+	})
+
+	router.Get("/{alias}", redirect.New(log, storage))
 
 	log.Info("starting sever", slog.String("address: ", cfg.HTTPServer.Address))
 
