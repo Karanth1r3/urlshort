@@ -29,6 +29,8 @@ type Response struct {
 }
 
 // Declaring shorter storage interface variant at the place of usage
+// go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=URLSaver
+// go:generate mockgen -source=service.go -destination=mocks/mock.go
 type URLSaver interface {
 	SaveURL(urlToSave, alias string) error
 }
